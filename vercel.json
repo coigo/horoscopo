@@ -10,7 +10,7 @@
     },
     "functions": {
         "src/pages/api/**": {
-            "memory": 512
+            "memory": 512 
         }
     },
     "headers": [
