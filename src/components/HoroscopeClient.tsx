@@ -52,7 +52,7 @@ export function HoroscopeClient({ initialData }: HoroscopeClientProps) {
                                 </button>
                             );
                         })}
-                    </div>
+                    </div> 
                 </div>
 
                 {/* Área de exibição do horóscopo */}
