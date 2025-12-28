@@ -1,0 +1,50 @@
+{
+    "buildCommand": "next build",
+    "devCommand": "next dev",
+    "installCommand": "npm install",
+    "framework": "nextjs",
+    "nodeVersion": "18.x",
+    "env": {
+        "GEMINI_API_KEY": {
+            "description": "Chave da API Google Gemini para geração de horóscopo"
+        }
+    },
+    "build": {
+        "env": {
+            "GEMINI_API_KEY": "@gemini_api_key"
+        }
+    },
+    "functions": {
+        "src/pages/api/**": {
+            "memory": 512,
+            "timeout": 30
+        }
+    },
+    "headers": [
+        {
+            "source": "/(.*)",
+            "headers": [
+                {
+                    "key": "X-Content-Type-Options",
+                    "value": "nosniff"
+                },
+                {
+                    "key": "X-Frame-Options",
+                    "value": "DENY"
+                },
+                {
+                    "key": "X-XSS-Protection",
+                    "value": "1; mode=block"
+                },
+                {
+                    "key": "Referrer-Policy",
+                    "value": "strict-origin-when-cross-origin"
+                },
+                {
+                    "key": "Permissions-Policy",
+                    "value": "camera=(), microphone=(), geolocation=()"
+                }
+            ]
+        }
+    ]
+}
