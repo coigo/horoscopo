@@ -10,8 +10,7 @@
     },
     "functions": {
         "src/pages/api/**": {
-            "memory": 512,
-            "timeout": 30
+            "memory": 512
         }
     },
     "headers": [
