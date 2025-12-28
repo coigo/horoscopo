@@ -2,8 +2,7 @@
     "framework": "nextjs",
     "functions": {
         "src/pages/api/**": {
-            "memory": 512,
-            "maxDuration": 30
+            "memory": 512
         }
     },
     "headers": [
