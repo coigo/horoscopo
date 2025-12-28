@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { ZODIAC_SIGNS, ZODIAC_MAP } from '@/lib/geminiService';
+import { ZODIAC_ICONS } from '@/lib/zodiacIcons';
 
 interface HoroscopeClientProps {
     initialData: Record<string, string>;
@@ -13,7 +14,6 @@ interface HoroscopeClientProps {
  */
 export function HoroscopeClient({ initialData }: HoroscopeClientProps) {
     const [selectedSign, setSelectedSign] = useState<string>('aries');
-    console.log('selectedSign', selectedSign)
 
     // Memoiza os dados para evitar re-renders desnecessários
     const horoscopes = useMemo(() => initialData, [initialData]);
@@ -38,15 +38,17 @@ export function HoroscopeClient({ initialData }: HoroscopeClientProps) {
                                     key={normalizedSign}
                                     onClick={() => setSelectedSign(normalizedSign)}
                                     className={`
-                    px-4 py-3 rounded-lg font-semibold transition-all duration-200
+                    px-4 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2
                     ${isSelected
-                                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-105'
-                                            : 'bg-slate-700 text-purple-200 hover:bg-slate-600 hover:text-white'
+                                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg scale-105'
+                                            : 'bg-slate-700 hover:bg-slate-600'
                                         }
                   `}
                                     aria-pressed={isSelected}
+                                    title={`${sign} - ${ZODIAC_ICONS[normalizedSign]}`}
                                 >
-                                    {sign}
+                                    <span className="text-xl text-white">{ZODIAC_ICONS[normalizedSign]}</span>
+                                    <span className={isSelected ? 'text-white' : 'text-purple-200'}>{sign}</span>
                                 </button>
                             );
                         })}
@@ -56,11 +58,14 @@ export function HoroscopeClient({ initialData }: HoroscopeClientProps) {
                 {/* Área de exibição do horóscopo */}
                 <div className="lg:col-span-2">
                     <div className="bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl p-8 shadow-2xl border border-purple-500 border-opacity-30">
-                        <div className="mb-6">
-                            <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text">
-                                {ZODIAC_MAP[selectedSign] || selectedSign}
-                            </h2>
-                            <div className="h-1 w-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mt-2"></div>
+                        <div className="mb-6 flex items-center gap-4">
+                            <span className="text-5xl">{ZODIAC_ICONS[selectedSign]}</span>
+                            <div>
+                                <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text">
+                                    {ZODIAC_MAP[selectedSign] || selectedSign}
+                                </h2>
+                                <div className="h-1 w-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mt-2"></div>
+                            </div>
                         </div>
 
                         <div className="min-h-32">

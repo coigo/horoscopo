@@ -3,7 +3,6 @@
     "devCommand": "next dev",
     "installCommand": "npm install",
     "framework": "nextjs",
-    "nodeVersion": "18.x",
     "env": {
         "GEMINI_API_KEY": {
             "description": "Chave da API Google Gemini para geração de horóscopo"
