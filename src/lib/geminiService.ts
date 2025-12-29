@@ -40,8 +40,14 @@ export const ZODIAC_MAP: Record<string, ZodiacSign> = {
 
 /**
  * Gera um prompt para o Gemini gerar um horóscopo divertido para programadores
+ * @param sign - Nome do signo
+ * @param indireta - Indireta pessoal opcional para ser incorporada ao horóscopo
  */
-export function generatePrompt(sign: string): string {
+export function generatePrompt(sign: string, indireta?: string): string {
+    const indiretaSection = indireta
+        ? `\n\nIMPORTANTE: Incorpore de forma sutil e bem-humorada a seguinte "indireta pessoal" no horóscopo: "${indireta}". Não use a frase exatamente como foi escrita, mas faça uma referência criativa a ela.`
+        : '';
+
     return `Você é um astrólogo cômico especializado em horóscopo para programadores profissionais.
 Gere um horóscopo curto, engraçado e direto para o signo ${sign} HOJE.
 
@@ -57,7 +63,7 @@ Fazer piadas ou indiretas sobre programação, bugs, código, deadlines e rotina
     - Ser relevante para programadores
     - Não ser repetitivo
     -Maneirar no uso de jargões em língua inglesa
-    -Não incluir palavras dentro de aspas simples ou formatação especial
+    -Não incluir palavras dentro de aspas simples ou formatação especial${indiretaSection}
 
 Responda APENAS com o horóscopo, sem introdução ou formatação extra.`;
 }
@@ -66,58 +72,58 @@ Responda APENAS com o horóscopo, sem introdução ou formatação extra.`;
  * Chama a API do Gemini para gerar um horóscopo
  */
 
-    let keys: string[] = []
-    let consumedKeys: string[] = []
+let keys: string[] = []
+let consumedKeys: string[] = []
 
-    const useKey = () => {
-        const current = getCurrentKey()
-        consumedKeys.push(current)
-    }
+const useKey = () => {
+    const current = getCurrentKey()
+    consumedKeys.push(current)
+}
 
-    const getCurrentKey = () => {
-        const current = keys.filter(k => !consumedKeys.includes(k))[0]
-        return current
-    }
+const getCurrentKey = () => {
+    const current = keys.filter(k => !consumedKeys.includes(k))[0]
+    return current
+}
 
-    const setKeys = (we: string[]) => {
-        if (keys.length) return
+const setKeys = (we: string[]) => {
+    if (keys.length) return
 
-        for (const key of we) {
-            if ( !keys.includes(key)) {
-                keys.push(key)
-            }
+    for (const key of we) {
+        if (!keys.includes(key)) {
+            keys.push(key)
         }
     }
-    export const resetConsumed = () => {
-        consumedKeys = []
-    }
+}
+export const resetConsumed = () => {
+    consumedKeys = []
+}
 
 
-export async function teste (prompt: string): Promise<string> {
+export async function teste(prompt: string): Promise<string> {
     const keysEnv = process.env.GEMINI_API_KEY;
     if (!keysEnv) {
         throw new Error('GEMINI_API_KEY não está configurada');
     }
     const splitKey = keysEnv.split('/')
     setKeys(splitKey)
-    
+
     const currentKey = getCurrentKey()
-    if ( !currentKey ) {
+    if (!currentKey) {
         return "Não ha mais chaves"
         throw new Error('Não há mais chaves para serem usadas! ');
     }
 
     try {
-        const result = await callGeminiAPI(prompt, currentKey) 
+        const result = await callGeminiAPI(prompt, currentKey)
         console.log("_ fim aqui")
         return result
     }
-    catch (err: any ) {
+    catch (err: any) {
         console.log("___ code", JSON.parse(err.message).error)
         console.log("___ code")
         const error = JSON.parse(err.message).error
         // console.log("___ code", err.error.code)
-        if (error.code == 429) {  
+        if (error.code == 429) {
             useKey()
             const result = await teste(prompt)
             return result
@@ -131,7 +137,7 @@ export async function teste (prompt: string): Promise<string> {
 // async function teste2 (prompt: string, apiKey: string) {
 //     console.log("chave que chegou",  apiKey)
 //     console.log("chaves invalidas",  consumedKeys.length)
-    
+
 //     const chance = Math.random()
 //     if ( chance >= 0.8 || consumedKeys.includes(apiKey) ) {
 //         throw {code: 429}
@@ -142,7 +148,7 @@ export async function teste (prompt: string): Promise<string> {
 async function callGeminiAPI(prompt: string, apiKey: string): Promise<string> {
     console.log('-> usando chave ', apiKey)
 
-    const genAi = new GoogleGenAI({apiKey});
+    const genAi = new GoogleGenAI({ apiKey });
     const response = await genAi.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: prompt
