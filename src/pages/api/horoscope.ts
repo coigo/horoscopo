@@ -6,6 +6,7 @@ import { getTodayHoroscopes, isTodayHoroscopeGenerated, saveAllHoroscopes } from
 /**
  * Endpoint para gerar horóscopo para um signo específico
  * POST /api/horoscope
+ * Body opcional: { indiretas: { signo: "indireta personalizada" } }
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     // Apenas POST é permitido
@@ -15,14 +16,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const { sign } = req.query;
-        // Valida o signo
-        
-        // Se já foram gerados todos os horóscopo hoje, retorna do cache
-        if (isTodayHoroscopeGenerated()) {
+        // Obtém as indiretas do body (se fornecidas)
+        const { indiretas } = req.body || {};
+
+        // Se já foram gerados todos os horóscopo hoje E não tem indiretas personalizadas, retorna do cache
+        if (isTodayHoroscopeGenerated() && !indiretas) {
             const horoscopes = getTodayHoroscopes();
             return res.status(200).json(horoscopes);
         }
-        
+
         // Gera horóscopo para todos os signos
         const horoscopes: Record<string, string> = {};
         const zodiacSigns = Object.keys(ZODIAC_MAP);
@@ -31,16 +33,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         for (const zodiacSign of zodiacSigns) {
             console.log("tentando", zodiacSign)
 
-            const prompt = generatePrompt(ZODIAC_MAP[zodiacSign]);
+            // Obtém a indireta para este signo (se existir)
+            const indireta = indiretas?.[zodiacSign] || undefined;
+
+            const prompt = generatePrompt(ZODIAC_MAP[zodiacSign], indireta);
             const horoscope = await teste(prompt);
             horoscopes[zodiacSign] = horoscope || `Não há previsões para ${zodiacSign}`;
             // Pequeno delay entre requisições
             await new Promise((resolve) => setTimeout(resolve, 100));
         }
-        
-        // Salva todos no cache
+
+        // Salva todos no cache (apenas se não houver indiretas personalizadas)
         resetConsumed()
-        saveAllHoroscopes(horoscopes);
+        if (!indiretas) {
+            saveAllHoroscopes(horoscopes);
+        }
 
         return res.status(200).json(horoscopes);
     } catch (error) {
