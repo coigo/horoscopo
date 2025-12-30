@@ -1,5 +1,6 @@
 import type { GetStaticProps } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 import { HoroscopeClient } from '@/components/HoroscopeClient';
 import { ZODIAC_MAP } from '@/lib/geminiService';
 import { getTodayHoroscopes, isTodayHoroscopeGenerated } from '@/lib/horoscopeCache';
@@ -30,6 +31,13 @@ export default function Home({ horoscopes, generated }: HomeProps) {
             {generated && (
               <p className="text-sm text-green-400 mt-2">✓ Conteúdo pré-carregado para o dia de hoje</p>
             )}
+            <Link
+              href="/weee"
+              className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 hover:text-purple-200 rounded-lg transition-all duration-200 border border-purple-500/30"
+            >
+              <span>🎯</span>
+              Configurar Indiretas (esconde esse botão depois)
+            </Link>
           </header>
 
           <HoroscopeClient initialData={horoscopes} />
