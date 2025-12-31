@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { resetConsumed, ZODIAC_MAP } from '@/lib/geminiService';
 import { teste, generatePrompt } from '@/lib/geminiService';
-import { getTodayHoroscopes, isTodayHoroscopeGenerated, saveAllHoroscopes } from '@/lib/horoscopeCache';
+import { getTodayHoroscopes, isTodayHoroscopeGenerated, saveHoroscope } from '@/lib/horoscopeCache';
 
 /**
  * Endpoint para gerar horóscopo para um signo específico
@@ -37,17 +37,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const indireta = indiretas?.[zodiacSign] || undefined;
 
             const prompt = generatePrompt(ZODIAC_MAP[zodiacSign], indireta);
-            const horoscope = await teste(prompt);
-            horoscopes[zodiacSign] = horoscope || `Não há previsões para ${zodiacSign}`;
+            // const horoscope = await teste(prompt);
+            // horoscopes[zodiacSign] = horoscope || `Não há previsões para ${zodiacSign}`;
             // Pequeno delay entre requisições
+            // if (!indireta) {
+            //     saveHoroscope(zodiacSign, horoscope);
+            // }
             await new Promise((resolve) => setTimeout(resolve, 100));
         }
 
         // Salva todos no cache (apenas se não houver indiretas personalizadas)
         resetConsumed()
-        if (!indiretas) {
-            saveAllHoroscopes(horoscopes);
-        }
 
         return res.status(200).json(horoscopes);
     } catch (error) {

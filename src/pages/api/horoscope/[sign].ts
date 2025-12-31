@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if (!horoscope) {
                 return res.status(400).json({ error: 'Conteúdo do horóscopo é obrigatório' });
             }
-
+            console.log()
             saveHoroscope(normalizedSign, horoscope);
 
             return res.status(200).json({

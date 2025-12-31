@@ -3,9 +3,10 @@
 import { useState, useMemo } from 'react';
 import { ZODIAC_SIGNS, ZODIAC_MAP } from '@/lib/geminiService';
 import { ZODIAC_ICONS } from '@/lib/zodiacIcons';
+import { Horoscopes } from '@/types';
 
 interface HoroscopeClientProps {
-    initialData: Record<string, string>;
+    initialData: Horoscopes;
 }
 
 /**
@@ -70,7 +71,7 @@ export function HoroscopeClient({ initialData }: HoroscopeClientProps) {
 
                         <div className="min-h-32">
                             <p className="text-lg leading-relaxed text-purple-100 whitespace-pre-wrap">
-                                {currentHoroscope}
+                                {currentHoroscope.value}
                             </p>
                         </div>
 

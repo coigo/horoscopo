@@ -4,13 +4,22 @@ import Link from 'next/link';
 import { HoroscopeClient } from '@/components/HoroscopeClient';
 import { ZODIAC_MAP } from '@/lib/geminiService';
 import { getTodayHoroscopes, isTodayHoroscopeGenerated } from '@/lib/horoscopeCache';
+import { Horoscopes } from '@/types';
+import { useState } from 'react';
 
 interface HomeProps {
-  horoscopes: Record<string, string>;
+  horoscopes: Horoscopes;
   generated: boolean;
 }
 
 export default function Home({ horoscopes, generated }: HomeProps) {
+  const [isBlinking, setIsBlinking] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsBlinking(true);
+    setTimeout(() => setIsBlinking(false), 600); // 3 piscadas = 600ms
+  };
+
   return (
     <>
       <Head>
@@ -18,6 +27,16 @@ export default function Home({ horoscopes, generated }: HomeProps) {
         <meta name="description" content="Horóscopo divertido e irreverente para programadores" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
+
+      <style>{`
+        @keyframes blink3x {
+          0%, 100% { opacity: 0.1; }
+          50% { opacity: 1; }
+        }
+        .blink-animation {
+          animation: blink3x 0.2s ease-in-out 3;
+        }
+      `}</style>
 
       <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
         <div className="container mx-auto px-4 py-12">
@@ -31,15 +50,17 @@ export default function Home({ horoscopes, generated }: HomeProps) {
             {generated && (
               <p className="text-sm text-green-400 mt-2">✓ Conteúdo pré-carregado para o dia de hoje</p>
             )}
-            <Link
-              href="/weee"
-              className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 hover:text-purple-200 rounded-lg transition-all duration-200 border border-purple-500/30"
-            >
-              <span>🎯</span>
-              Configurar Indiretas (esconde esse botão depois)
-            </Link>
+            <div className="fixed bottom-4 right-4 z-50">
+              <Link
+                href="/weee"
+                onMouseEnter={handleMouseEnter}
+                className={`inline-flex items-center gap-2 px-4 py-2 bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 hover:text-purple-200 rounded-lg transition-all duration-200 border border-purple-500/30 opacity-0 hover:opacity-100 ${isBlinking ? 'blink-animation' : ''}`}
+              >
+                <span>🎯</span>
+                Configurar Indiretas
+              </Link>
+            </div>
           </header>
-
           <HoroscopeClient initialData={horoscopes} />
         </div>
       </main>
@@ -52,37 +73,37 @@ export default function Home({ horoscopes, generated }: HomeProps) {
  * Se não estiverem gerados, faz uma chamada à API
  */
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
-  let horoscopes: Record<string, string> = {};
+  // let horoscopes: Horoscopes = {};
   let generated = false;
 
   // Verifica se já foram gerados
-  if (isTodayHoroscopeGenerated()) {
-    horoscopes = getTodayHoroscopes();
-    generated = true;
-  } else {
-    // Tenta gerar chamando a API interna
-    try {
-      const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-
-      const response = await fetch(`${baseUrl}/api/horoscope`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      // console.log(response)
-      if (response.ok) {
-        horoscopes = await response.json();
-        generated = true;
-      }
-    } catch (error) {
-      console.error('Erro ao gerar horóscopo durante build:', error);
-      // Mesmo com erro, fornece um horóscopo padrão para não quebrar a página
-      for (const sign of Object.keys(ZODIAC_MAP)) {
-        horoscopes[sign] = 'Horóscopo indisponível. Tente novamente mais tarde.';
-      }
-    }
-  }
+  // if (isTodayHoroscopeGenerated()) {
+  const horoscopes = getTodayHoroscopes();
+  console.log(horoscopes)
+  generated = true;
+  // } else {
+  // Tenta gerar chamando a API interna
+  //   try {
+  //     const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+  //     const response = await fetch(`${baseUrl}/api/horoscope`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
+  //     // console.log(response)
+  //     if (response.ok) {
+  //       horoscopes = await response.json();
+  //       generated = true;
+  //     }
+  //   } catch (error) {
+  //     console.error('Erro ao gerar horóscopo durante build:', error);
+  //     // Mesmo com erro, fornece um horóscopo padrão para não quebrar a página
+  //     for (const sign of Object.keys(ZODIAC_MAP)) {
+  //       horoscopes[sign] = 'Horóscopo indisponível. Tente novamente mais tarde.';
+  //     }
+  //   }
+  // }
 
   return {
     props: {
@@ -90,6 +111,6 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
       generated,
     },
     // Revalida a cada 1 hora (3600 segundos)
-    revalidate: 3600,
+    // revalidate: 3600,
   };
 };

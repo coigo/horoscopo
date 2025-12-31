@@ -48,3 +48,12 @@ export interface HomePageProps {
     horoscopes: Record<string, string>;
     generated: boolean;
 }
+
+export type Horoscope = {
+    value: string
+    data: Date | string
+}
+
+export type Horoscopes = {
+    [key: string]: Horoscope
+}

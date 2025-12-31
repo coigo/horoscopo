@@ -1,3 +1,4 @@
+import { Horoscope, Horoscopes } from '@/types';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -19,19 +20,20 @@ function getCurrentDate(): string {
 /**
  * Lê o arquivo de cache de horóscopo
  */
-function readHoroscopeFile(): HoroscopeData {
+function readHoroscopeFile(): Horoscopes {
     try {
         const data = fs.readFileSync(HOROSCOPE_FILE, 'utf-8');
         return JSON.parse(data);
-    } catch {
-        return { date: '1970-01-01', horoscopes: {} };
+    } catch (err){
+        console.log('tentando ler o arquivo', err)
+        return { };
     }
 }
 
 /**
  * Escreve dados no arquivo de cache
  */
-function writeHoroscopeFile(data: HoroscopeData): void {
+function writeHoroscopeFile(data: Horoscopes): void {
     fs.writeFileSync(HOROSCOPE_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
@@ -39,18 +41,20 @@ function writeHoroscopeFile(data: HoroscopeData): void {
  * Verifica se o horóscopo de hoje já foi gerado
  */
 export function isTodayHoroscopeGenerated(): boolean {
-    const data = readHoroscopeFile();
-    return data.date === getCurrentDate() && Object.keys(data.horoscopes).length === 12;
+    // const data = readHoroscopeFile();
+    // return data.date === getCurrentDate() && Object.keys(data.horoscopes).length === 12;
+    return false
 }
 
 /**
  * Obtém todos os horóscopo do dia
  */
-export function getTodayHoroscopes(): Record<string, string> {
+export function getTodayHoroscopes(): Horoscopes {
     const data = readHoroscopeFile();
-    if (data.date === getCurrentDate()) {
-        return data.horoscopes;
-    }
+    console.log("data", data)
+    // if (data.date === getCurrentDate()) {
+        return data;
+    // }
     return {};
 }
 
@@ -61,23 +65,16 @@ export function saveHoroscope(sign: string, content: string): void {
     const data = readHoroscopeFile();
     const today = getCurrentDate();
 
-    // Se mudou o dia, reseta
-    if (data.date !== today) {
-        data.date = today;
-        data.horoscopes = {};
+    const horoscope: Horoscope = {
+        data: today,
+        value: content
     }
 
-    data.horoscopes[sign] = content;
-    writeHoroscopeFile(data);
-}
+    // Se mudou o dia, reseta
+    // if (data.date !== today) {
+        data[sign] = horoscope;
+    // }
 
-/**
- * Salva todos os horóscopo do dia de uma vez
- */
-export function saveAllHoroscopes(horoscopes: Record<string, string>): void {
-    const data: HoroscopeData = {
-        date: getCurrentDate(),
-        horoscopes,
-    };
+    data[sign] = horoscope;
     writeHoroscopeFile(data);
 }
