@@ -78,7 +78,7 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
 
   // Verifica se já foram gerados
   // if (isTodayHoroscopeGenerated()) {
-  const horoscopes = getTodayHoroscopes();
+  const horoscopes = await getTodayHoroscopes();
   console.log(horoscopes)
   generated = true;
   // } else {

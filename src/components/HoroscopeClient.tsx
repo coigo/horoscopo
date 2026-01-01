@@ -21,7 +21,7 @@ export function HoroscopeClient({ initialData }: HoroscopeClientProps) {
 
     // Obtém o horóscopo selecionado
     const currentHoroscope = useMemo(() => {
-        return horoscopes[selectedSign] || 'Horóscopo não disponível';
+        return horoscopes[selectedSign] ;
     }, [horoscopes, selectedSign]);
 
     return (
@@ -71,7 +71,7 @@ export function HoroscopeClient({ initialData }: HoroscopeClientProps) {
 
                         <div className="min-h-32">
                             <p className="text-lg leading-relaxed text-purple-100 whitespace-pre-wrap">
-                                {currentHoroscope.value}
+                                {currentHoroscope?.value|| 'Horóscopo não disponível'}
                             </p>
                         </div>
 

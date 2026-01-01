@@ -1,6 +1,7 @@
 import { Horoscope, Horoscopes } from '@/types';
 import * as fs from 'fs';
 import * as path from 'path';
+import { client } from './redis';
 
 const HOROSCOPE_FILE = path.join(process.cwd(), 'horoscopes.json');
 
@@ -49,19 +50,20 @@ export function isTodayHoroscopeGenerated(): boolean {
 /**
  * Obtém todos os horóscopo do dia
  */
-export function getTodayHoroscopes(): Horoscopes {
-    const data = readHoroscopeFile();
-    console.log("data", data)
-    // if (data.date === getCurrentDate()) {
-        return data;
-    // }
-    return {};
+export async function getTodayHoroscopes(): Promise<Horoscopes> {
+    const horoscope = await client.get("horoscope")
+    console.log("weee", horoscope)
+    if ( !horoscope ) {
+        return {}
+    }
+
+    return JSON.parse(horoscope)
 }
 
 /**
  * Salva um horóscopo para o dia
  */
-export function saveHoroscope(sign: string, content: string): void {
+export async function saveHoroscope(sign: string, content: string): Promise<void> {
     const data = readHoroscopeFile();
     const today = getCurrentDate();
 
@@ -69,11 +71,11 @@ export function saveHoroscope(sign: string, content: string): void {
         data: today,
         value: content
     }
+    const currentHoroscope = await getTodayHoroscopes()
 
-    // Se mudou o dia, reseta
-    // if (data.date !== today) {
-        data[sign] = horoscope;
-    // }
+    currentHoroscope[sign] = horoscope;
+
+    await client.set("horoscope", JSON.stringify(currentHoroscope))
 
     data[sign] = horoscope;
     writeHoroscopeFile(data);

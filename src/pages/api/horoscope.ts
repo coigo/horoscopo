@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // Se já foram gerados todos os horóscopo hoje E não tem indiretas personalizadas, retorna do cache
         if (isTodayHoroscopeGenerated() && !indiretas) {
-            const horoscopes = getTodayHoroscopes();
+            const horoscopes = await getTodayHoroscopes();
             return res.status(200).json(horoscopes);
         }
 
