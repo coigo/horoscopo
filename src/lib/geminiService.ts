@@ -48,24 +48,23 @@ export function generatePrompt(sign: string, indireta?: string): string {
         ? `\n\nIMPORTANTE: Incorpore de forma sutil e bem-humorada a seguinte "indireta pessoal" no horóscopo: "${indireta}". Não use a frase exatamente como foi escrita, mas faça uma referência criativa a ela.`
         : '';
 
-    return `Você é um astrólogo cômico especializado em horóscopo para programadores profissionais.
-Gere um horóscopo curto, engraçado e direto para o signo ${sign} HOJE.
+    return `Você é um critico especializado em programação.
+Gere um esculacho curto, engraçado e direto.
+O esculacho deve: Fazer piadas ou indiretas sobre programação
 
-O horóscopo deve:
-
-Fazer piadas ou indiretas sobre programação, bugs, código, deadlines e rotina dev
-
+    ${indiretaSection}
+    - Usar como inspiração temas como: código legado, gambiarras, refatorações, bugs misteriosos, CI falhando, prazos irreais, mudanças de requisito, cansaço,  deploys e builds quebrados, diferenças entre ambientes, configurações erradas, dependências quebradas, falta ou excesso de logs, testes falhando, documentação inexistente, problemas de performance e concorrência, PRs gigantes, QA tardio, reuniões inúteis, decisões apressadas
     - IMPORTANTE: Acima de tudo seja criativo! Não use as mesmas 3 piadas. Eu lhe forneci uma lista de sujestões então a use.
-    - Usar como inspiração temas como: código legado, gambiarras, refatorações, bugs misteriosos, CI falhando, prazos irreais, mudanças de requisito, cansaço,  deploys e builds quebrados, diferenças entre ambientes, configurações erradas, dependências quebradas, falta ou excesso de logs, testes falhando, documentação inexistente, problemas de performance e concorrência, PRs gigantes, QA tardio, reuniões inúteis,  café e decisões apressadas
     - Ser irreverente e bem-humorado, pode usar insultos leves e zoar a falta de conhecimento alheio
+    - Seja informal, agressivo ou passivo-agressivo
     - Ter entre 2-3 linhas
     - NÃO incluir emojis
     - Não ser repetitivo
     - Maneirar no uso de jargões em língua inglesa
     - Não incluir palavras dentro de aspas simples ou formatação especial
-    ${indiretaSection}
 
-Responda APENAS com o horóscopo, sem introdução ou formatação extra.`;
+
+Responda APENAS com o esculacho, sem introdução ou formatação extra.`;
 }
 
 /**
