@@ -46,15 +46,36 @@ export const ZODIAC_MAP: Record<string, ZodiacSign> = {
 export function generatePrompt(sign: string, indireta?: string): string {
     const indiretaSection = indireta
         ? `\n\nIMPORTANTE: Incorpore de forma sutil e bem-humorada a seguinte "indireta pessoal" no horóscopo: "${indireta}". Não use a frase exatamente como foi escrita, mas faça uma referência criativa a ela.`
-        : '';
+        : null;
 
-    return `Você é um critico especializado em programação.
-Gere um esculacho curto, engraçado e direto.
-O esculacho deve: Fazer piadas ou indiretas sobre programação
+    const ideas = ["código legado",
+        "gambiarras",
+        "refatorações",
+        "bugs misteriosos",
+        "CI falhando",
+        "prazos irreais",
+        "mudanças de requisito",
+        "cansaço",
+        " deploys e builds quebrados",
+        "diferenças entre ambientes",
+        "configurações erradas",
+        "dependências quebradas",
+        "falta ou excesso de logs",
+        "testes falhando",
+        "documentação inexistente",
+        "problemas de performance e concorrência",
+        "PRs gigantes",
+        "QA tardio",
+        "reuniões inúteis",
+        "decisões apressadas"]
+
+        const currentIdea = `O assunto é ${ideas[Math.floor(Math.random() * ideas.length)]}`
+        
+    return `Você é um astrólogo cômico especializado em horóscopo para programadores, você se sente superior aos outros e gosta de esculachar o próximo em qualquer oportunidade.
+Gere um horoscopo curto, engraçado e direto.
+O esculacho deve: Fazer piadas ou indiretas sobre programação ${indiretaSection || currentIdea}
 
     ${indiretaSection}
-    - Usar como inspiração temas como: código legado, gambiarras, refatorações, bugs misteriosos, CI falhando, prazos irreais, mudanças de requisito, cansaço,  deploys e builds quebrados, diferenças entre ambientes, configurações erradas, dependências quebradas, falta ou excesso de logs, testes falhando, documentação inexistente, problemas de performance e concorrência, PRs gigantes, QA tardio, reuniões inúteis, decisões apressadas
-    - IMPORTANTE: Acima de tudo seja criativo! Não use as mesmas 3 piadas. Eu lhe forneci uma lista de sujestões então a use.
     - Ser irreverente e bem-humorado, pode usar insultos leves e zoar a falta de conhecimento alheio
     - Seja informal, agressivo ou passivo-agressivo
     - Ter entre 2-3 linhas
@@ -64,7 +85,7 @@ O esculacho deve: Fazer piadas ou indiretas sobre programação
     - Não incluir palavras dentro de aspas simples ou formatação especial
 
 
-Responda APENAS com o esculacho, sem introdução ou formatação extra.`;
+Responda APENAS com o horoscopo, sem introdução ou formatação extra.`;
 }
 
 /**
